@@ -1,46 +1,44 @@
-# Astro Starter Kit: Basics
+# Proyecto Web Eva Torres - Documentación 
 
-```sh
-pnpm create astro@latest -- --template basics
-```
+Este repositorio contiene el código fuente para el sitio web corporativo y e-commerce de Eva Torres.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+**Este documento sirve como guía de referencia interna para el equipo de desarrollo y diseño**, con el objetivo de mantener la consistencia visual y técnica del proyecto.
 
-## 🚀 Project Structure
+---
 
-Inside of your Astro project, you'll see the following folders and files:
+## 🎨 Sistema de Diseño y Guía de Estilos
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+Es crítico mantener la identidad de marca de forma estricta en todos los componentes. Utilizad siempre las variables de color y las tipografías definidas en la configuración de Tailwind.
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+### Paleta de Colores Oficial
 
-## 🧞 Commands
+Estos son los valores hexadecimales exactos que definen la marca. No utilicéis colores "parecidos" o hardcodeados, usad siempre las clases de utilidad de Tailwind correspondientes.
 
-All commands are run from the root of the project, from a terminal:
+| Muestra | Nombre Interno (Tailwind) | HEX | Uso Principal |
+| :--- | :--- | :--- | :--- |
+| <span style="display:inline-block;width:20px;height:20px;background-color:#0a2e20;border:1px solid #000;"></span> | `eva-dark` | **#0a2e20** | Color primario corporativo. Fondos fuertes (Hero, Footer), textos de alto contraste sobre fondos claros. |
+| <span style="display:inline-block;width:20px;height:20px;background-color:#D4AF37;border:1px solid #000;"></span> | `eva-gold` | **#D4AF37** | Color de acento principal. CTAs, bordes, iconos, detalles de lujo y divisores. |
+| <span style="display:inline-block;width:20px;height:20px;background-color:#FDFBF7;border:1px solid #ccc;"></span> | `eva-cream` | **#FDFBF7** | Fondos secundarios, áreas de contenido claras que requieren calidez, inputs de formulario. |
+| <span style="display:inline-block;width:20px;height:20px;background-color:#FFFFFF;border:1px solid #ccc;"></span> | `white` | **#FFFFFF** | Texto sobre fondos oscuros y contenedores tipo tarjeta para máxima limpieza. |
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+### Tipografía
 
-## 👀 Want to learn more?
+Las fuentes están configuradas globalmente en `tailwind.config.js`. Usad las siguientes clases de utilidad según la jerarquía:
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+* `font-brand`: Para títulos principales de impacto (H1, H2) y nombres de colección (Estilo Serif elegante de alto contraste).
+* `font-serif`: Para subtítulos y textos que requieran carácter (Estilo Serif más legible).
+* `font-sans`: (Por defecto en `body`) Para el cuerpo de texto, párrafos y lectura general.
+
+---
+
+## 🛠️ Stack Tecnológico
+
+* **Core Framework:** Astro (Enfoque SSG para rendimiento óptimo y SEO).
+* **Estilos:** Tailwind CSS (Utilidades primero).
+* **Iconos:** Se utiliza un componente propio `Icon.astro` que renderiza SVGs inline. No usar librerías externas pesadas.
+
+---
+
+
+
+
