@@ -1,0 +1,41 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Nuestra Colección | Eva Torres">
+    <Header />
+    <main class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h1 class="text-5xl font-script text-center text-eva-green mb-16">Nuestros Productos</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="group cursor-pointer">
+                    <div class="overflow-hidden rounded-lg shadow-lg mb-4 aspect-[3/4]">
+                        <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1000&auto=format&fit=crop" alt="Ropa de Mujer" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <h3 class="text-2xl font-script text-center text-gray-800 group-hover:text-eva-green">Ropa de Mujer</h3>
+                    <p class="text-center text-gray-500 text-sm">Vestidos, blusas y looks casuales.</p>
+                </div>
+
+                <div class="group cursor-pointer">
+                    <div class="overflow-hidden rounded-lg shadow-lg mb-4 aspect-[3/4]">
+                        <img src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=1000&auto=format&fit=crop" alt="Calzados" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <h3 class="text-2xl font-script text-center text-gray-800 group-hover:text-eva-green">Calzados</h3>
+                    <p class="text-center text-gray-500 text-sm">Para ella y para él. Comodidad y estilo.</p>
+                </div>
+
+                <div class="group cursor-pointer">
+                    <div class="overflow-hidden rounded-lg shadow-lg mb-4 aspect-[3/4]">
+                        <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=1000&auto=format&fit=crop" alt="Complementos y Belleza" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <h3 class="text-2xl font-script text-center text-gray-800 group-hover:text-eva-green">Belleza y Accesorios</h3>
+                    <p class="text-center text-gray-500 text-sm">Bolsos, bufandas, perfumes y cosmética.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <Footer />
+</Layout>

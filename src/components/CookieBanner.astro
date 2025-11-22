@@ -1,0 +1,42 @@
+<div id="cookie-banner" class="fixed bottom-0 left-0 w-full bg-white border-t-4 border-eva-green shadow-[0_-4px_20px_rgba(0,0,0,0.1)] z-[60] p-6 transform translate-y-full transition-transform duration-500">
+    <div class="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-gray-600 text-sm md:text-base">
+            <p>
+                Utilizamos cookies propias y de terceros para mejorar tu experiencia y analizar el tráfico. 
+                Puedes leer más en nuestra <a href="/legal/cookies" class="text-eva-green font-bold underline hover:text-eva-gold">Política de Cookies</a>.
+            </p>
+        </div>
+        <div class="flex gap-4">
+            <button id="accept-cookies" class="bg-eva-green text-white px-6 py-2 rounded-sm font-bold text-sm uppercase tracking-wider hover:bg-green-900 transition shadow-md">
+                Aceptar
+            </button>
+            <button id="reject-cookies" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-sm font-bold text-sm uppercase tracking-wider hover:bg-gray-300 transition">
+                Rechazar
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const banner = document.getElementById('cookie-banner');
+    const acceptBtn = document.getElementById('accept-cookies');
+    const rejectBtn = document.getElementById('reject-cookies');
+
+    // Comprobar si ya hay una decisión guardada
+    if (!localStorage.getItem('cookiesAccepted')) {
+        // Mostrar banner con un pequeño retraso para efecto suave
+        setTimeout(() => {
+            banner.classList.remove('translate-y-full');
+        }, 1000);
+    }
+
+    acceptBtn.addEventListener('click', () => {
+        localStorage.setItem('cookiesAccepted', 'true');
+        banner.classList.add('translate-y-full');
+    });
+
+    rejectBtn.addEventListener('click', () => {
+        localStorage.setItem('cookiesAccepted', 'false');
+        banner.classList.add('translate-y-full');
+    });
+</script>

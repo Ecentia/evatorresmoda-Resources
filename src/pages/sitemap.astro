@@ -1,0 +1,33 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+<Layout title="Mapa del Sitio | Eva Torres">
+    <Header />
+    <main class="container mx-auto px-4 py-16">
+        <h1 class="text-4xl font-script text-eva-green mb-8">Mapa del Sitio</h1>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div>
+                <h2 class="font-bold text-xl mb-4">Principal</h2>
+                <ul class="space-y-2">
+                    <li><a href="/" class="hover:text-eva-green">Inicio</a></li>
+                    <li><a href="/nosotros" class="hover:text-eva-green">Sobre Nosotros</a></li>
+                    <li><a href="/coleccion" class="hover:text-eva-green">Colección</a></li>
+                    <li><a href="/contacto" class="hover:text-eva-green">Contacto</a></li>
+                </ul>
+            </div>
+            <div>
+                <h2 class="font-bold text-xl mb-4">Legal</h2>
+                <ul class="space-y-2">
+                    <li><a href="/legal/aviso-legal" class="hover:text-eva-green">Aviso Legal</a></li>
+                    <li><a href="/legal/privacidad" class="hover:text-eva-green">Política de Privacidad</a></li>
+                    <li><a href="/legal/cookies" class="hover:text-eva-green">Política de Cookies</a></li>
+                    <li><a href="/legal/terminos" class="hover:text-eva-green">Términos y Condiciones</a></li>
+                    <li><a href="/legal/accesibilidad" class="hover:text-eva-green">Declaración de Accesibilidad</a></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+    <Footer />
+</Layout>

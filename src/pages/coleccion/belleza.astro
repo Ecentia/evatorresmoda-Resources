@@ -1,0 +1,46 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const products = [
+    { name: "Bolso de Mano Rojo", price: "35.00€", img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=800" },
+    { name: "Perfume Chanel N5", price: "29.95€", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800" },
+    // Imagen de collar que funciona
+    { name: "Collar Dorado", price: "15.00€", img: "https://images.unsplash.com/photo-1599643478518-17488fbbcd75?q=80&w=800" },
+    { name: "Cinturón Piel", price: "12.50€", img: "https://images.unsplash.com/photo-1624223046406-3b6237d80d51?q=80&w=800" },
+    { name: "Set Brochas", price: "45.00€", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=800" },
+    { name: "Bufanda Invierno", price: "18.00€", img: "https://images.unsplash.com/photo-1520903920243-00d872a2d1c9?q=80&w=800" },
+];
+---
+
+<Layout title="Belleza y Accesorios | Eva Torres">
+    <Header />
+    <main class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h1 class="text-5xl font-brand text-center text-eva-green mb-4">Belleza y Accesorios</h1>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Los pequeños detalles marcan la diferencia. Completa tu look con nuestros complementos.</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                {products.map((product) => (
+                    <div class="bg-white shadow-sm hover:shadow-xl transition duration-300 rounded-sm group flex flex-col h-full">
+                        <div class="relative w-full aspect-[3/4] overflow-hidden bg-gray-100">
+                            <img src={product.img} alt={product.name} class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy" />
+                            <div class="absolute bottom-0 left-0 bg-eva-green text-white px-4 py-2 font-bold text-sm">
+                                {product.price}
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 border-t border-gray-100 flex-grow flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-lg font-serif font-bold text-gray-900 leading-tight mb-1">{product.name}</h3>
+                                <p class="text-xs text-gray-500 uppercase tracking-wide">Disponible en tienda</p>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    </main>
+    <Footer />
+</Layout>
