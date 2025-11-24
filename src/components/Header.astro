@@ -1,6 +1,29 @@
 ---
 import Icon from './Icons.astro';
+import { getCollection } from 'astro:content';
+// Importamos el "Tipo" para que TypeScript no se queje
+import type { CollectionEntry } from 'astro:content';
+
+// 1. Orden deseado
+const desiredOrder = ['ropa-mujer', 'belleza', 'calzados'];
+
+// 2. Definimos que 'categories' es una lista de la colección 'categories'
+let categories: CollectionEntry<'categories'>[] = [];
+
+try {
+    const allCategories = await getCollection('categories');
+    if (allCategories) {
+        categories = allCategories.sort((a, b) => {
+            const indexA = desiredOrder.indexOf(a.id);
+            const indexB = desiredOrder.indexOf(b.id);
+            return (indexA === -1 ? 99 : indexA) - (indexB === -1 ? 99 : indexB);
+        });
+    }
+} catch (e) {
+    console.log("Aún no hay categorías creadas");
+}
 ---
+
 <div class="bg-eva-dark text-eva-cream text-xs py-2 hidden md:block">
     <div class="container mx-auto px-4 flex justify-between items-center">
         <span>Bda. Francisco de Quevedo, Bloque 22, Local C, Arahal</span>
@@ -27,10 +50,16 @@ import Icon from './Icons.astro';
             </svg>
         </a>
         
-        <div class="absolute left-0 mt-2 w-56 bg-white text-gray-800 shadow-xl rounded-b-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 border-t-4 border-eva-gold">
-            <a href="/coleccion/ropa-mujer" class="block px-6 py-3 hover:bg-gray-50 hover:text-eva-green transition border-b border-gray-100">Ropa de Mujer</a>
-            <a href="/coleccion/calzados" class="block px-6 py-3 hover:bg-gray-50 hover:text-eva-green transition border-b border-gray-100">Calzados</a>
-            <a href="/coleccion/belleza" class="block px-6 py-3 hover:bg-gray-50 hover:text-eva-green transition">Belleza y Accesorios</a>
+        <div class="absolute left-0 mt-2 w-56 bg-white text-gray-800 shadow-xl rounded-b-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 border-t-4 border-eva-gold z-50">
+            {categories.length > 0 ? (
+                categories.map((cat) => (
+                    <a href={`/coleccion/${cat.id}`} class="block px-6 py-3 hover:bg-gray-50 hover:text-eva-green transition border-b border-gray-100 last:border-0">
+                        {cat.data.name}
+                    </a>
+                ))
+            ) : (
+                <span class="block px-6 py-3 text-gray-400 text-xs italic">Sin categorías</span>
+            )}
         </div>
       </div>
 

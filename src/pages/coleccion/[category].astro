@@ -1,0 +1,97 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+// 1. FUNCIÓN OBLIGATORIA: Genera las rutas estáticas (Ropa, Calzados, Belleza...)
+export async function getStaticPaths() {
+  const allCategories = await getCollection('categories');
+  
+  return allCategories.map(cat => ({
+    params: { category: cat.id }, // La URL será /coleccion/nombre-categoria
+    props: { 
+        categoryName: cat.data.name,
+        categoryDesc: cat.data.description 
+    },
+  }));
+}
+
+// 2. Recogemos los datos de la categoría actual
+const { category } = Astro.params;
+const { categoryName, categoryDesc } = Astro.props;
+
+// 3. Buscamos los PRODUCTOS que pertenecen a esta categoría
+const allProducts = await getCollection('products');
+const products = allProducts.filter(p => p.data.category.id === category);
+---
+
+<Layout title={`${categoryName} | Eva Torres`}>
+    <Header />
+    <main class="py-16 bg-gray-50 min-h-[60vh]">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h1 class="text-5xl font-brand text-eva-green mb-4">{categoryName}</h1>
+                {categoryDesc && (
+                    <p class="text-gray-600 max-w-2xl mx-auto">{categoryDesc}</p>
+                )}
+            </div>
+            
+            {products.length === 0 ? (
+                <div class="text-center py-16 bg-white rounded-lg shadow-sm">
+                    <p class="text-xl text-gray-500 mb-4">No hay productos disponibles en {categoryName} ahora mismo.</p>
+                    <a href="/coleccion" class="text-eva-green underline font-bold hover:text-eva-gold">Volver a ver todas las colecciones</a>
+                </div>
+            ) : (
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                    {products.map((product) => (
+                        <div class="bg-white shadow-sm hover:shadow-xl transition duration-300 rounded-sm group flex flex-col h-full relative">
+                            
+                            {/* Etiqueta Destacado */}
+                            {product.data.isFeatured && (
+                                <span class="absolute top-2 left-2 z-10 bg-eva-gold text-white text-xs font-bold px-2 py-1 uppercase tracking-wider">
+                                    Destacado
+                                </span>
+                            )}
+
+                            {/* Imagen */}
+                            <div class="relative w-full aspect-[3/4] overflow-hidden bg-gray-100">
+                                <img 
+                                    src={product.data.image} 
+                                    alt={product.data.name} 
+                                    class="w-full h-full object-cover group-hover:scale-105 transition duration-500" 
+                                    loading="lazy" 
+                                />
+                                {/* Precio (Solo si existe) */}
+                                {product.data.price && (
+                                    <div class="absolute bottom-0 left-0 bg-eva-green text-white px-4 py-2 font-bold text-sm">
+                                        {product.data.price}
+                                    </div>
+                                )}
+                            </div>
+                            
+                            {/* Datos */}
+                            <div class="p-4 border-t border-gray-100 flex-grow flex flex-col justify-between">
+                                <div>
+                                    <h3 class="text-lg font-serif font-bold text-gray-900 leading-tight mb-2">{product.data.name}</h3>
+                                    
+                                    {/* Tallas */}
+                                    {product.data.sizes && product.data.sizes.length > 0 && (
+                                        <div class="flex gap-1 flex-wrap">
+                                            {product.data.sizes.map((size) => (
+                                                <span class="text-[10px] border border-gray-200 bg-gray-50 text-gray-600 px-1.5 py-0.5 rounded uppercase">
+                                                    {size}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    </main>
+    <Footer />
+</Layout>
