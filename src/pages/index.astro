@@ -1,0 +1,294 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Icon from '../components/Icons.astro';
+import { sanityClient } from "sanity:client";
+import { urlFor } from '../utils/sanity';
+
+// Definición de tipo para las categorías en la portada
+interface Category {
+    id: string; 
+    name: string;
+    coverImage: any;
+}
+
+let categories: Category[] = [];
+
+try {
+    // Consulta GROQ ACTUALIZADA: 
+    // Filtramos por 'isMain == true' y limitamos a 3 resultados
+    const query = `*[_type == "category" && isMain == true][0...3]{
+        "id": slug.current,
+        name,
+        coverImage
+    }`;
+    categories = await sanityClient.fetch(query);
+
+} catch (e) {
+    console.error("Error conectando con Sanity en Index:", e);
+}
+---
+
+<Layout title="Eva Torres | Moda y Calzados en Arahal">
+	<Header />
+	<main>
+		<section class="relative h-[85vh] flex items-center overflow-hidden bg-eva-dark">
+            <div class="absolute inset-0 z-0">
+                <img 
+                    src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop" 
+                    alt="Mujer feliz de compras en Eva Torres" 
+                    class="w-full h-full object-cover object-center md:object-right"
+                />
+            </div>
+
+            <div class="absolute inset-0 bg-gradient-to-r from-[#0a2e20] via-[#0a2e20] via-35% to-transparent z-10"></div>
+            
+            <div class="container mx-auto px-6 relative z-20 flex items-center h-full">
+                <div class="max-w-2xl text-white pl-4 md:pl-12">
+                    
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-16 h-[2px] bg-eva-gold"></div>
+                        <span class="uppercase tracking-[0.3em] text-sm text-eva-gold font-bold drop-shadow-sm">
+                            Tu Tienda en Arahal
+                        </span>
+                    </div>
+
+                    <h1 class="text-7xl md:text-[8rem] font-brand text-white drop-shadow-2xl leading-none mb-6">
+                        Eva Torres
+                    </h1>
+
+                    <h2 class="text-3xl md:text-5xl font-serif text-white uppercase tracking-widest mb-10 pl-2 border-l-4 border-eva-gold leading-tight">
+                        Calzados <span class="text-eva-gold font-brand lowercase text-5xl md:text-6xl px-1 align-middle" style="text-transform: none;">&</span> Complementos
+                    </h2>
+
+                    <p class="text-lg text-eva-cream/90 font-light mb-12 leading-relaxed max-w-lg border-l border-eva-gold/30 pl-6 py-2">
+                        Donde la elegancia se encuentra con la tradición. Descubre colecciones seleccionadas con mimo para mujeres reales que buscan estilo y calidad en el corazón de Arahal.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-6">
+                        <a href="/coleccion" class="bg-eva-gold text-eva-dark px-12 py-4 uppercase text-sm font-bold tracking-[0.2em] hover:bg-white hover:scale-105 transition transform shadow-2xl rounded-sm">
+                            Ver Colección
+                        </a>
+                        <a href="#contacto-rapido" class="group flex items-center justify-center gap-3 px-10 py-4 uppercase text-sm font-bold tracking-[0.2em] text-white border-2 border-white/30 hover:bg-white/10 hover:border-white transition rounded-sm">
+                            <span>Visítanos</span>
+                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 group-hover:translate-x-2 transition-transform">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+			</div>
+		</section>
+
+        <section class="py-24 bg-white relative z-30">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl md:text-5xl font-brand text-center text-eva-green mb-4">Nuestras Colecciones</h2>
+                <p class="text-center text-gray-500 mb-16 max-w-2xl mx-auto font-serif italic">"El estilo es una forma de decir quién eres sin tener que hablar."</p>
+                
+                {categories.length === 0 ? (
+                    <div class="text-center p-10 bg-gray-50 rounded border-2 border-dashed border-gray-200 max-w-2xl mx-auto">
+                        <p class="text-gray-500 mb-2 text-lg">Selecciona las categorías principales en tu panel de administración.</p>
+                        <p class="text-sm text-gray-400">Asegúrate de marcar la opción "¿Mostrar en Portada?" en Sanity.</p>
+                    </div>
+                ) : (
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {categories.map((cat) => (
+                            <a href={`/coleccion/${cat.id}`} class="group block relative h-[600px] overflow-hidden rounded-sm shadow-2xl">
+                                {cat.coverImage ? (
+                                    <img 
+                                        src={urlFor(cat.coverImage).width(600).height(900).url()} 
+                                        alt={cat.name} 
+                                        class="w-full h-full object-cover group-hover:scale-110 transition duration-1000"
+                                    />
+                                ) : (
+                                    <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400 font-serif italic">Sin imagen</div>
+                                )}
+                                
+                                {/* Overlay Gradiente */}
+                                <div class="absolute inset-0 bg-gradient-to-t from-eva-dark/80 via-transparent to-transparent opacity-80 group-hover:opacity-60 transition duration-500"></div>
+                                
+                                {/* Texto Flotante */}
+                                <div class="absolute bottom-0 left-0 w-full text-center text-white p-8 translate-y-4 group-hover:translate-y-0 transition duration-500">
+                                    <h3 class="text-4xl font-serif mb-4">{cat.name}</h3>
+                                    <span class="inline-block text-xs uppercase tracking-[0.2em] text-eva-gold border-b-2 border-eva-gold pb-2 font-bold group-hover:text-white group-hover:border-white transition">Explorar</span>
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </section>
+
+        <section class="py-24 bg-eva-cream relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-96 h-96 bg-eva-green/5 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-eva-gold/10 rounded-full blur-3xl"></div>
+
+            <div class="container mx-auto px-4 text-center relative z-10">
+                <h2 class="text-5xl md:text-6xl font-brand text-eva-green mb-6">Nuestra Pasión</h2>
+                <div class="w-24 h-1 bg-eva-gold mx-auto mb-16"></div>
+
+                <div class="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto">
+                    <div class="bg-white p-10 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition duration-500 rounded-sm group border-b-4 border-eva-green relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-eva-green to-eva-gold transform scale-x-0 group-hover:scale-x-100 transition duration-500"></div>
+                        <div class="h-20 w-20 mx-auto mb-8 text-eva-green group-hover:text-eva-gold transition duration-500 p-4 bg-eva-cream/50 rounded-full">
+                            <Icon name="dress" class="w-full h-full" />
+                        </div>
+                        <h3 class="text-xl font-serif font-bold text-eva-dark mb-4 uppercase tracking-wider">Moda Mujer</h3>
+                        <p class="text-gray-600 leading-relaxed text-sm">Selección exclusiva de prendas que realzan tu estilo. Desde looks casuales hasta la elegancia más sofisticada.</p>
+                    </div>
+                    <div class="bg-white p-10 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition duration-500 rounded-sm group border-b-4 border-eva-gold relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-eva-gold to-eva-green transform scale-x-0 group-hover:scale-x-100 transition duration-500"></div>
+                        <div class="h-20 w-20 mx-auto mb-8 text-eva-green group-hover:text-eva-gold transition duration-500 p-4 bg-eva-cream/50 rounded-full">
+                            <Icon name="shoe" class="w-full h-full" />
+                        </div>
+                        <h3 class="text-xl font-serif font-bold text-eva-dark mb-4 uppercase tracking-wider">Calzado Confort</h3>
+                        <p class="text-gray-600 leading-relaxed text-sm">Fusión perfecta de diseño y comodidad. Trabajamos con hormas que cuidan tus pies todo el día.</p>
+                    </div>
+                    <div class="bg-white p-10 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition duration-500 rounded-sm group border-b-4 border-eva-green relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-eva-green to-eva-gold transform scale-x-0 group-hover:scale-x-100 transition duration-500"></div>
+                        <div class="h-20 w-20 mx-auto mb-8 text-eva-green group-hover:text-eva-gold transition duration-500 p-4 bg-eva-cream/50 rounded-full">
+                            <Icon name="store" class="w-full h-full" />
+                        </div>
+                        <h3 class="text-xl font-serif font-bold text-eva-dark mb-4 uppercase tracking-wider">Atención Local</h3>
+                        <p class="text-gray-600 leading-relaxed text-sm">Trato cercano y 100% personalizado en nuestra tienda de Arahal. Tu confianza es nuestro mayor valor.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-28 bg-white border-t border-gray-100 relative overflow-hidden">
+             <div class="absolute top-1/2 right-0 translate-x-1/3 -translate-y-1/2 text-[25rem] font-brand text-eva-cream opacity-30 select-none pointer-events-none leading-none">Torres</div>
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="flex flex-col lg:flex-row items-center gap-24">
+                    
+                    <div class="lg:w-1/2 relative">
+                        <div class="absolute -top-6 -left-6 w-full h-full border-2 border-eva-gold/50 rounded-sm z-0"></div>
+                        <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=1000&auto=format&fit=crop" alt="Experiencia en Tienda" class="relative z-10 shadow-2xl w-full h-auto object-cover grayscale-[10%] hover:grayscale-0 transition duration-700">
+                    </div>
+
+                    <div class="lg:w-1/2">
+                        <h2 class="text-6xl font-brand text-eva-dark mb-4">La Experiencia</h2>
+                        <h3 class="text-3xl font-serif text-eva-green mb-12 pl-2 border-l-4 border-eva-gold">Eva Torres Boutique</h3>
+                        
+                        <div class="space-y-12">
+                            <div class="flex gap-8 group">
+                                <div class="w-14 h-14 flex-shrink-0 flex items-center justify-center rounded-full bg-eva-cream text-eva-gold font-serif font-bold text-2xl group-hover:bg-eva-gold group-hover:text-white transition shadow-sm border-2 border-eva-gold/20">1</div>
+                                <div>
+                                    <h4 class="text-2xl font-bold text-eva-dark uppercase tracking-wide mb-3 font-serif">Toca y Siente</h4>
+                                    <p class="text-gray-600 leading-relaxed font-light text-lg">Nada sustituye la sensación de apreciar las texturas y los colores reales. Olvídate de las sorpresas de la compra online.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-8 group">
+                                <div class="w-14 h-14 flex-shrink-0 flex items-center justify-center rounded-full bg-eva-cream text-eva-gold font-serif font-bold text-2xl group-hover:bg-eva-gold group-hover:text-white transition shadow-sm border-2 border-eva-gold/20">2</div>
+                                <div>
+                                    <h4 class="text-2xl font-bold text-eva-dark uppercase tracking-wide mb-3 font-serif">Asesoramiento Real</h4>
+                                    <p class="text-gray-600 leading-relaxed font-light text-lg">¿Dudas con la talla o cómo combinarlo? Estamos ahí contigo, cara a cara, para ayudarte con sinceridad y experiencia.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-8 group">
+                                <div class="w-14 h-14 flex-shrink-0 flex items-center justify-center rounded-full bg-eva-cream text-eva-gold font-serif font-bold text-2xl group-hover:bg-eva-gold group-hover:text-white transition shadow-sm border-2 border-eva-gold/20">3</div>
+                                <div>
+                                    <h4 class="text-2xl font-bold text-eva-dark uppercase tracking-wide mb-3 font-serif">Sin Prisas</h4>
+                                    <p class="text-gray-600 leading-relaxed font-light text-lg">Disfruta de un ambiente cuidado donde cada detalle está pensado para que te sientas cómoda, bienvenida y especial.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 bg-eva-dark text-white relative overflow-hidden">
+            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+            <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-eva-green/20 rounded-full blur-3xl"></div>
+
+            <div class="container mx-auto px-4 flex flex-col md:flex-row items-center gap-20 relative z-10">
+                <div class="md:w-1/2 relative pl-12 border-l-4 border-eva-gold">
+                    <h3 class="text-4xl md:text-5xl font-serif mb-8 leading-tight">
+                        Moda real para mujeres reales en <span class="text-eva-gold font-brand text-6xl px-2 align-middle">Arahal</span>.
+                    </h3>
+                    <p class="text-eva-cream text-lg mb-10 font-light leading-relaxed opacity-90">
+                        En un mundo digital, reivindicamos el valor de lo tangible. En nuestra tienda física encontrarás ese trato humano, cercano y honesto que las grandes cadenas han perdido.
+                    </p>
+                    <a href="/nosotros" class="bg-eva-gold text-eva-dark px-10 py-4 uppercase tracking-[0.2em] text-sm font-bold hover:bg-white transition inline-block rounded-sm shadow-xl">Conoce nuestra historia</a>
+                </div>
+                <div class="md:w-1/2 grid grid-cols-2 gap-6 relative">
+                    <div class="absolute inset-0 border-4 border-eva-gold/20 transform rotate-3 rounded-sm z-0"></div>
+                    <img src="https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?q=80&w=800" class="relative z-10 rounded-sm shadow-2xl translate-y-12 border-2 border-white/10 grayscale-[30%] hover:grayscale-0 transition duration-500">
+                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=800" class="relative z-10 rounded-sm shadow-2xl border-2 border-white/10 grayscale-[30%] hover:grayscale-0 transition duration-500 -translate-y-4">
+                </div>
+            </div>
+        </section>
+
+        <section class="py-32 relative bg-cover bg-center attachment-fixed" style="background-image: url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=2000&auto=format&fit=crop'); background-attachment: fixed;">
+            <div class="absolute inset-0 bg-[#0a2e20]/90"></div>
+            
+            <div class="container mx-auto px-4 max-w-4xl text-center relative z-10">
+                <div class="border-2 border-eva-gold/30 p-12 md:p-16 rounded-sm bg-white/5 backdrop-blur-md shadow-2xl">
+                    <span class="text-eva-gold font-bold tracking-[0.3em] uppercase text-xs mb-6 block">Newsletter Exclusiva</span>
+                    <h2 class="text-5xl md:text-6xl font-brand text-white mb-8">Únete al Club Eva Torres</h2>
+                    <p class="text-eva-cream mb-12 font-light text-xl max-w-2xl mx-auto leading-relaxed">
+                        Suscríbete para recibir las novedades de temporada, ofertas privadas y avisos de eventos en tienda directamente en tu email.
+                    </p>
+                    
+                    <form class="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
+                        <input type="email" placeholder="Tu correo electrónico..." class="w-full px-8 py-5 text-gray-900 bg-eva-cream/95 rounded-sm focus:outline-none border-2 border-transparent focus:border-eva-gold placeholder-gray-500 shadow-inner text-lg">
+                        <button type="button" class="bg-gradient-to-r from-eva-gold to-[#b8962e] text-eva-dark px-10 py-5 font-bold uppercase tracking-[0.2em] hover:shadow-2xl transition rounded-sm flex items-center justify-center gap-3 sm:w-auto w-full transform hover:-translate-y-1">
+                            Suscribirme
+                        </button>
+                    </form>
+                    <p class="text-white/50 text-sm mt-8 font-light">Al suscribirte aceptas nuestra política de privacidad. Prometemos no enviar spam.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="contacto-rapido" class="bg-eva-dark border-t-8 border-eva-gold relative">
+             <div class="flex flex-col lg:flex-row h-full">
+                <div class="lg:w-1/2 p-16 lg:p-24 flex flex-col justify-center bg-[#082018] relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-eva-gold/5 rounded-full blur-3xl pointer-events-none"></div>
+                    <h2 class="text-5xl font-serif text-white mb-12">Visítanos</h2>
+                    <div class="space-y-10 text-eva-cream">
+                         <div class="flex items-start gap-8 group relative z-10">
+                            <div class="text-eva-gold p-4 border-2 border-eva-gold/20 rounded-full shrink-0 group-hover:bg-eva-gold group-hover:text-eva-dark transition shadow-md"><Icon name="map" class="w-7 h-7" /></div>
+                            <div>
+                                <p class="font-bold uppercase tracking-[0.2em] text-sm mb-3 text-eva-gold">Dirección</p>
+                                <p class="text-xl leading-relaxed font-light">Bda. Francisco de Quevedo, Bloque 22, Local C, Arahal, Sevilla</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-8 group relative z-10">
+                             <div class="text-eva-gold p-4 border-2 border-eva-gold/20 rounded-full shrink-0 group-hover:bg-eva-gold group-hover:text-eva-dark transition shadow-md"><Icon name="clock" class="w-7 h-7" /></div>
+                            <div>
+                                <p class="font-bold uppercase tracking-[0.2em] text-sm mb-3 text-eva-gold">Horario Hoy</p>
+                                <p class="text-xl font-light">10:00–13:45, 18:00–21:00</p>
+                                <a href="/contacto" class="text-eva-gold text-sm underline hover:text-white mt-3 block font-bold tracking-wider">Ver horario completo</a>
+                            </div>
+                        </div>
+                         <div class="flex items-start gap-8 mt-16 relative z-10">
+                            <a href="tel:+34651688937" class="bg-white text-eva-dark px-12 py-5 font-bold uppercase tracking-[0.2em] hover:bg-eva-gold hover:text-white transition rounded-sm flex items-center gap-4 shadow-2xl transform hover:-translate-y-1">
+                                <Icon name="phone" class="w-6 h-6" /> Llamar ahora
+                            </a>
+                         </div>
+                    </div>
+                </div>
+
+                <div class="lg:w-1/2 h-[500px] lg:h-auto bg-white relative">
+                     <div class="absolute top-0 bottom-0 left-0 w-4 bg-eva-gold z-10 hidden lg:block shadow-2xl"></div>
+                     <iframe 
+                        src="https://maps.google.com/maps?q=Bda.+Francisco+de+Quevedo,+Bloque+22,+Local+C,+41600+Arahal,+Sevilla&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        class="w-full h-full"
+                    ></iframe>
+                </div>
+             </div>
+        </section>
+	</main>
+	<Footer />
+</Layout>

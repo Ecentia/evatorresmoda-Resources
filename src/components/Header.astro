@@ -1,0 +1,86 @@
+---
+import Icon from './Icons.astro';
+import { sanityClient } from "sanity:client";
+
+// Definimos el tipo para evitar errores de TypeScript
+interface Category {
+    id: string;
+    name: string;
+}
+
+// 1. Orden deseado
+const desiredOrder = ['ropa-mujer', 'belleza', 'calzados'];
+
+let categories: Category[] = [];
+
+try {
+    // Consulta a Sanity: pedimos el slug (como 'id') y el nombre
+    const query = `*[_type == "category"]{ 
+        "id": slug.current, 
+        name 
+    }`;
+    const allCategories = await sanityClient.fetch(query);
+
+    if (allCategories) {
+        categories = allCategories.sort((a: any, b: any) => {
+            const indexA = desiredOrder.indexOf(a.id);
+            const indexB = desiredOrder.indexOf(b.id);
+            return (indexA === -1 ? 99 : indexA) - (indexB === -1 ? 99 : indexB);
+        });
+    }
+} catch (e) {
+    console.log("Error cargando categorías del menú");
+}
+---
+
+<div class="bg-eva-dark text-eva-cream text-xs py-2 hidden md:block">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+        <span>Bda. Francisco de Quevedo, Bloque 22, Local C, Arahal</span>
+        <a href="tel:+34651688937" class="hover:text-eva-gold transition">📞 651 688 937</a>
+    </div>
+</div>
+
+<header class="bg-eva-green text-white shadow-lg sticky top-0 z-40 border-b border-eva-gold/30">
+  <div class="container mx-auto px-4 py-3 flex justify-between items-center relative">
+    
+    <a href="/" class="text-4xl md:text-5xl font-brand hover:text-eva-gold transition-colors transform translate-y-1">
+      Eva Torres
+    </a>
+
+    <nav class="hidden md:flex items-center gap-8 text-sm uppercase tracking-widest font-medium">
+      <a href="/" class="hover:text-eva-gold transition py-2">Inicio</a>
+      <a href="/nosotros" class="hover:text-eva-gold transition py-2">Nosotros</a>
+      
+      <div class="relative group">
+        <a href="/coleccion" class="hover:text-eva-gold transition py-2 flex items-center gap-1 cursor-pointer">
+            Colección 
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mt-0.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+        </a>
+        
+        <div class="absolute left-0 mt-2 w-56 bg-white text-gray-800 shadow-xl rounded-b-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 border-t-4 border-eva-gold z-50">
+            {categories.length > 0 ?
+            (
+                categories.map((cat) => (
+                    <a href={`/coleccion/${cat.id}`} class="block px-6 py-3 hover:bg-gray-50 hover:text-eva-green transition border-b border-gray-100 last:border-0">
+                        {/* Aquí usamos cat.name en lugar de cat.data.name */}
+                        {cat.name}
+                    </a>
+                ))
+            ) : (
+                <span class="block px-6 py-3 text-gray-400 text-xs italic">Sin categorías</span>
+            )}
+        </div>
+      </div>
+
+      <a href="/contacto" class="hover:text-eva-gold transition py-2">Contacto</a>
+    </nav>
+
+    <div class="flex items-center gap-4">
+        <a href="https://www.facebook.com/evamaria.rodrigueztorres.9" target="_blank" aria-label="Facebook" class="bg-white/10 p-2 rounded-full hover:bg-eva-gold hover:text-eva-dark transition">
+            <Icon name="facebook" class="w-5 h-5" />
+        </a>
+    </div>
+  </div>
+</header>

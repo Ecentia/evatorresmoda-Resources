@@ -1,0 +1,26 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+<Layout title="Declaración de Accesibilidad | Eva Torres">
+    <Header />
+    <main class="container mx-auto px-4 py-16 max-w-4xl">
+        <h1 class="text-4xl font-script text-eva-green mb-8">Accesibilidad</h1>
+        <div class="prose prose-gray max-w-none text-gray-700 space-y-6">
+            <p>Eva Torres se ha comprometido a hacer accesible su sitio web de conformidad con la normativa vigente para que pueda ser utilizado por el mayor número de personas posible, independientemente de sus capacidades.</p>
+            
+            <h3 class="text-2xl font-serif text-eva-dark">Estado de cumplimiento</h3>
+            <p>Este sitio web es parcialmente conforme con el RD 1112/2018. Trabajamos continuamente para mejorar la accesibilidad y usabilidad de nuestro portal.</p>
+
+            <h3 class="text-2xl font-serif text-eva-dark">Medidas adoptadas</h3>
+            <ul class="list-disc pl-5">
+                <li>Uso de textos alternativos en las imágenes.</li>
+                <li>Estructura de encabezados clara y lógica.</li>
+                <li>Contraste de colores adecuado para facilitar la lectura.</li>
+                <li>Diseño adaptable a dispositivos móviles (Responsive).</li>
+            </ul>
+        </div>
+    </main>
+    <Footer />
+</Layout>

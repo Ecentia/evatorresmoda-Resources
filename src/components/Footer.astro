@@ -1,0 +1,76 @@
+---
+import Icon from './Icons.astro';
+const currentYear = new Date().getFullYear();
+---
+<footer class="bg-[#082018] text-gray-400 py-16 mt-auto border-t-4 border-eva-gold">
+    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-10 text-sm">
+        
+        <div class="col-span-1 md:col-span-1">
+            <h3 class="text-4xl font-brand text-white mb-6">Eva Torres</h3>
+            <p class="mb-6 leading-relaxed">
+                Tu boutique de moda y complementos en Arahal. Tradición, estilo y cercanía desde hace más de 15 años.
+            </p>
+            <div class="flex gap-4">
+                <a href="https://www.facebook.com/evamaria.rodrigueztorres.9" target="_blank" class="bg-white/5 p-2 rounded hover:bg-eva-gold hover:text-eva-dark transition">
+                    <Icon name="facebook" class="w-5 h-5" />
+                </a>
+            </div>
+        </div>
+
+        <div class="col-span-1 md:col-span-1">
+            <h4 class="text-eva-gold font-bold uppercase tracking-widest mb-6 font-serif">Contacto</h4>
+            <ul class="space-y-4">
+                <li class="flex items-start gap-3">
+                    <Icon name="map" class="w-5 h-5 text-eva-gold shrink-0" />
+                    <span>Bda. Francisco de Quevedo,<br>Bloque 22, Local C,<br>41600 Arahal, Sevilla</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <Icon name="phone" class="w-5 h-5 text-eva-gold shrink-0" />
+                    <a href="tel:+34651688937" class="hover:text-white transition">651 688 937</a>
+                </li>
+                <li class="flex items-center gap-3">
+                    <Icon name="email" class="w-5 h-5 text-eva-gold shrink-0" />
+                    <a href="mailto:evamariarodriguez5@gmail.com" class="hover:text-white transition">evamariarodriguez5@gmail.com</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-span-1 md:col-span-1">
+            <h4 class="text-eva-gold font-bold uppercase tracking-widest mb-6 font-serif">Horario</h4>
+            <ul class="space-y-2">
+                <li class="flex justify-between border-b border-white/10 pb-2">
+                    <span>Lunes - Viernes</span>
+                    <span class="text-right text-white">10:00–13:45<br>18:00–21:00</span>
+                </li>
+                <li class="flex justify-between border-b border-white/10 pb-2 pt-2">
+                    <span>Sábado</span>
+                    <span class="text-white">10:00–13:45</span>
+                </li>
+                <li class="flex justify-between pt-2">
+                    <span>Domingo</span>
+                    <span class="text-red-400">Cerrado</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-span-1 md:col-span-1">
+            <h4 class="text-eva-gold font-bold uppercase tracking-widest mb-6 font-serif">Legal</h4>
+            <ul class="space-y-2">
+                <li><a href="/legal/aviso-legal" class="hover:text-eva-gold transition">Aviso Legal</a></li>
+                <li><a href="/legal/privacidad" class="hover:text-eva-gold transition">Política de Privacidad</a></li>
+                <li><a href="/legal/cookies" class="hover:text-eva-gold transition">Política de Cookies</a></li>
+                <li><a href="/legal/terminos" class="hover:text-eva-gold transition">Términos y Condiciones</a></li>
+                <li><a href="/legal/accesibilidad" class="hover:text-eva-gold transition">Accesibilidad</a></li>
+                <li><a href="/sitemap" class="hover:text-eva-gold transition">Mapa del Sitio</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="text-center mt-12 pt-8 border-t border-white/10 text-xs text-gray-500 flex flex-col md:flex-row justify-between items-center container mx-auto px-4">
+        <span>&copy; {currentYear} Eva Torres Calzados. Todos los derechos reservados.</span>
+        
+        <span class="mt-2 md:mt-0 flex items-center gap-1">
+            Creado por <a href="https://ecentia.es/" target="_blank" rel="noopener noreferrer" class="text-eva-gold hover:text-white font-bold transition">Ecentia</a>
+        </span>
+    </div>
+</footer>

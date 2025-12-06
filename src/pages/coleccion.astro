@@ -1,0 +1,146 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Icon from '../components/Icons.astro';
+import { sanityClient } from "sanity:client";
+import { urlFor } from '../utils/sanity';
+
+interface Category {
+    id: string;
+    name: string;
+    description?: string;
+    coverImage: any;
+}
+
+const desiredOrder = ['ropa-mujer', 'calzados', 'belleza'];
+let categories: Category[] = [];
+
+try {
+    const query = `*[_type == "category"]{ 
+        "id": slug.current, 
+        name, 
+        description, 
+        coverImage 
+    }`;
+    const allCategories = await sanityClient.fetch(query);
+    
+    if (allCategories) {
+        categories = allCategories.sort((a: any, b: any) => {
+            const indexA = desiredOrder.indexOf(a.id);
+            const indexB = desiredOrder.indexOf(b.id);
+            return (indexA === -1 ? 99 : indexA) - (indexB === -1 ? 99 : indexB);
+        });
+    }
+} catch (e) {
+    console.error("Error cargando categorías:", e);
+}
+---
+
+<Layout title="Nuestras Colecciones | Eva Torres">
+    <Header />
+    <main class="bg-white">
+
+        <section class="relative pt-32 pb-20 bg-eva-dark text-white overflow-hidden">
+             <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+             <div class="absolute top-0 right-0 w-96 h-96 bg-eva-green/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+             <div class="absolute bottom-0 left-0 w-64 h-64 bg-eva-gold/10 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
+
+            <div class="container mx-auto px-4 text-center relative z-10">
+                <span class="text-eva-gold uppercase tracking-[0.4em] text-xs font-bold mb-6 block animate-fade-in-up">Catálogo Eva Torres</span>
+                <h1 class="text-6xl md:text-8xl font-brand mb-8 animate-fade-in-up" style="animation-delay: 0.1s;">Colecciones</h1>
+                <div class="w-24 h-1 bg-eva-gold mx-auto mb-8 animate-fade-in-up" style="animation-delay: 0.2s;"></div>
+                <p class="text-xl text-gray-300 font-light max-w-2xl mx-auto font-serif italic leading-relaxed animate-fade-in-up" style="animation-delay: 0.3s;">
+                    "Cada temporada seleccionamos piezas únicas que combinan la tradición de nuestra tierra con las tendencias más actuales."
+                </p>
+            </div>
+        </section>
+
+        <section class="py-24 relative">
+            <div class="container mx-auto px-4 max-w-7xl">
+
+                {categories.length === 0 ? (
+                    <div class="text-center py-32 bg-gray-50 rounded-lg border border-dashed border-gray-200 max-w-2xl mx-auto">
+                        <div class="text-gray-300 mb-6"><Icon name="store" class="w-20 h-20 mx-auto" /></div>
+                        <h3 class="text-2xl text-gray-500 font-serif mb-4">Próximamente</h3>
+                        <p class="text-gray-400 mb-8">Estamos preparando nuevas colecciones para ti.</p>
+                        <a href="/" class="inline-block px-10 py-3 bg-eva-green text-white uppercase tracking-widest text-xs font-bold rounded-sm hover:bg-eva-dark transition shadow-lg">
+                            Volver al Inicio
+                        </a>
+                    </div>
+                ) : (
+                    <div class="flex flex-col gap-32"> {/* Más espacio vertical entre bloques */}
+                        {categories.map((cat, index) => (
+                            <a href={`/coleccion/${cat.id}`} class="group block relative">
+                                {/* Altura aumentada a h-[600px] para formato vertical */}
+                                <div class={`flex flex-col lg:flex-row items-center gap-12 lg:gap-24 ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
+
+                                    <div class="w-full lg:w-1/2 relative">
+                                        {/* Marco decorativo adaptado a vertical */}
+                                        <div class={`absolute -top-6 -left-6 w-full h-full border-2 border-eva-gold/30 rounded-sm z-0 transition-transform duration-500 group-hover:translate-x-3 group-hover:translate-y-3 ${index % 2 === 1 ? '-right-6 left-auto' : ''}`}></div>
+                                        
+                                        {/* Aspect Ratio Vertical (3/4) */}
+                                        <div class="relative z-10 overflow-hidden rounded-sm shadow-2xl aspect-[3/4] h-[600px]">
+                                            {cat.coverImage ? (
+                                                <img 
+                                                    src={urlFor(cat.coverImage).width(800).height(1200).url()} 
+                                                    alt={cat.name} 
+                                                    class="w-full h-full object-cover transition duration-1000 transform group-hover:scale-110"
+                                                />
+                                            ) : (
+                                                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 font-serif italic text-lg">Imagen no disponible</div>
+                                            )}
+                                            
+                                            {/* Overlay sutil al hover */}
+                                            <div class="absolute inset-0 bg-eva-dark/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="w-full lg:w-1/2 text-center lg:text-left relative px-4">
+                                        {/* Número decorativo de fondo */}
+                                        <span class={`absolute text-[15rem] font-brand text-gray-100 -z-10 select-none top-1/2 -translate-y-1/2 transition-colors group-hover:text-eva-gold/10 ${index % 2 === 1 ? 'right-0 lg:-right-20' : 'left-0 lg:-left-20'}`}>
+                                            0{index + 1}
+                                        </span>
+
+                                        <div class="relative z-10">
+                                            <h2 class="text-6xl md:text-7xl font-serif text-eva-dark mb-8 group-hover:text-eva-green transition-colors leading-none">
+                                                {cat.name}
+                                            </h2>
+                                            <div class={`h-1 w-24 bg-eva-gold mb-10 transition-all duration-500 group-hover:w-48 ${index % 2 === 1 ? 'ml-auto lg:ml-0' : 'mx-auto lg:mx-0'}`}></div>
+                                            
+                                            {cat.description && (
+                                                <p class="text-gray-600 text-lg font-light leading-relaxed mb-12 max-w-lg mx-auto lg:mx-0">
+                                                    {cat.description}
+                                                </p>
+                                            )}
+
+                                            <span class="inline-flex items-center gap-3 px-10 py-4 bg-white text-eva-dark border border-eva-dark uppercase text-xs font-bold tracking-[0.25em] hover:bg-eva-dark hover:text-white transition duration-300 rounded-sm group-hover:shadow-xl">
+                                                Descubrir Colección
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 group-hover:translate-x-1 transition-transform">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </section>
+
+    </main>
+    <Footer />
+</Layout>
+
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.8s ease-out forwards;
+    }
+</style>

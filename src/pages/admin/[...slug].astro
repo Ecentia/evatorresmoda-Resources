@@ -1,0 +1,29 @@
+---
+// src/pages/admin/[...slug].astro
+
+// ESTA LÍNEA ES OBLIGATORIA PARA GITHUB PAGES:
+export const prerender = true;
+
+import { Studio } from 'sanity';
+// Ajusta la ruta para importar tu sanity.config
+// Si este archivo está en src/pages/admin/ el config está 3 niveles arriba
+import config from '../../../sanity.config'; 
+
+export async function getStaticPaths() {
+  return [{ params: { slug: undefined } }];
+}
+---
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin | Eva Torres</title>
+    <style>
+      html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <Studio config={config} basePath="/admin" client:only="react" />
+  </body>
+</html>

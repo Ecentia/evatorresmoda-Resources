@@ -1,0 +1,274 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Icon from '../../components/Icons.astro';
+import { sanityClient } from "sanity:client";
+import { urlFor } from '../../utils/sanity';
+import { PortableText } from "astro-portabletext";
+
+export async function getStaticPaths() {
+  const query = `*[_type == "product"]{ "slug": slug.current }`;
+  const products = await sanityClient.fetch(query);
+  return products.map((product: any) => ({ params: { slug: product.slug } }));
+}
+
+const { slug } = Astro.params;
+
+const query = `*[_type == "product" && slug.current == $slug][0]{
+  name,
+  price,
+  description,
+  sizes,
+  image,
+  gallery,
+  features,
+  "categoryName": category->title
+}`;
+
+const product = await sanityClient.fetch(query, { slug });
+
+if (!product) return Astro.redirect('/404');
+
+const featureMap: Record<string, { icon: string, label: string }> = {
+    spain: { icon: 'flag-spain', label: 'Hecho en España' },
+    leather: { icon: 'award', label: 'Piel Genuina' },
+    comfort: { icon: 'shoe', label: 'Comodidad Extra' },
+    exclusive: { icon: 'dress', label: 'Diseño Exclusivo' },
+};
+---
+
+<Layout title={`${product.name} | Eva Torres`}>
+    <Header />
+    <main class="bg-white relative">
+        <div class="container mx-auto px-4 py-6 border-b border-gray-100">
+            <nav class="flex text-sm font-medium text-gray-500 space-x-2">
+                <a href="/" class="hover:text-eva-green transition">Inicio</a>
+                <span>/</span>
+                <a href="/coleccion" class="hover:text-eva-green transition">Colección</a>
+                {product.categoryName && (
+                    <>
+                        <span>/</span>
+                        <span class="text-gray-900">{product.categoryName}</span>
+                    </>
+                )}
+            </nav>
+        </div>
+
+        <div class="container mx-auto px-4 py-12 max-w-6xl">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-start">
+                
+                {/* COLUMNA IZQUIERDA: FOTOS */}
+                <div class="space-y-4 sticky top-24">
+                    <div class="aspect-square bg-gray-50 relative rounded-lg overflow-hidden shadow-sm max-w-md mx-auto md:max-w-full border border-gray-100">
+                        {product.image && (
+                            <img 
+                                src={urlFor(product.image).width(800).url()} 
+                                alt={product.name} 
+                                class="w-full h-full object-cover"
+                                id="mainImage"
+                            />
+                        )}
+                    </div>
+
+                    {product.gallery && product.gallery.length > 0 && (
+                        <div class="grid grid-cols-5 gap-3 max-w-md mx-auto md:max-w-full">
+                            <button onclick={`document.getElementById('mainImage').src='${urlFor(product.image).width(800).url()}'`} class="aspect-square rounded-md overflow-hidden border border-gray-200 hover:border-eva-gold transition opacity-80 hover:opacity-100 focus:outline-none focus:border-eva-gold cursor-pointer">
+                                <img src={urlFor(product.image).width(200).url()} class="w-full h-full object-cover" alt="Vista principal" />
+                            </button>
+                            {product.gallery.map((img: any) => (
+                                <button onclick={`document.getElementById('mainImage').src='${urlFor(img).width(800).url()}'`} class="aspect-square rounded-md overflow-hidden border border-gray-200 hover:border-eva-gold transition opacity-80 hover:opacity-100 focus:outline-none focus:border-eva-gold cursor-pointer">
+                                    <img src={urlFor(img).width(200).url()} class="w-full h-full object-cover" alt="Vista galería" />
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* COLUMNA DERECHA: INFO */}
+                <div class="flex flex-col">
+                    <div class="mb-6 border-b border-gray-100 pb-6">
+                        {product.categoryName && (
+                            <span class="text-eva-gold text-xs font-bold uppercase tracking-widest mb-2 block">{product.categoryName}</span>
+                        )}
+                        <h1 class="text-3xl md:text-4xl font-serif text-eva-dark mb-3 leading-tight">{product.name}</h1>
+                        {product.price && (
+                            <p class="text-3xl text-eva-green font-bold">{product.price}</p>
+                        )}
+                    </div>
+
+                    {product.features && product.features.length > 0 && (
+                        <div class="bg-eva-cream/30 border border-eva-gold/20 rounded-lg p-4 mb-8">
+                            <div class="flex flex-wrap gap-x-6 gap-y-3">
+                                {product.features.map((featureKey: string) => {
+                                    const feature = featureMap[featureKey];
+                                    return feature ? (
+                                        <div class="flex items-center gap-2 text-eva-dark/80">
+                                            <div class="bg-white p-1.5 rounded-full shadow-sm flex items-center justify-center w-7 h-7">
+                                                <Icon name={feature.icon} class="w-4 h-4" />
+                                            </div>
+                                            <span class="text-xs font-bold uppercase tracking-wide">{feature.label}</span>
+                                        </div>
+                                    ) : null;
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    <div class="prose prose-sm md:prose-base text-gray-600 font-light leading-relaxed mb-8">
+                        <PortableText value={product.description} />
+                    </div>
+
+                    {product.sizes && product.sizes.length > 0 && (
+                        <div class="mb-8">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-sm font-bold text-gray-900 uppercase tracking-widest">Tallas Disponibles:</span>
+                                <button onclick="document.getElementById('sizeGuideModal').showModal()" class="text-xs text-eva-gold underline hover:text-eva-dark transition cursor-pointer flex items-center gap-1.5 font-bold uppercase tracking-wide group">
+                                    <span class="bg-eva-gold/10 p-1 rounded-full group-hover:bg-eva-gold group-hover:text-white transition">
+                                        <Icon name="ruler" class="w-3 h-3" />
+                                    </span>
+                                    Guía de tallas
+                                </button>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                {product.sizes.map((size: string) => (
+                                    <span class="h-10 min-w-[2.5rem] px-3 flex items-center justify-center border border-gray-300 text-gray-700 text-sm font-bold rounded hover:border-eva-gold cursor-default bg-white shadow-sm">
+                                        {size}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-inner">
+                        <p class="text-center text-sm font-medium text-eva-dark mb-4 italic">
+                            ¿Te interesa? Consúltanos disponibilidad o resérvalo directamente.
+                        </p>
+                        
+                        <a 
+                            href={`https://wa.me/34651688937?text=Hola,%20estoy%20interesada%20en%20el%20producto:%20${encodeURIComponent(product.name)}`}
+                            target="_blank"
+                            class="w-full bg-eva-green text-white py-4 px-6 rounded-sm font-bold uppercase tracking-widest hover:bg-[#0a2e20] transition flex items-center justify-center gap-3 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-base"
+                        >
+                            <Icon name="whatsapp" class="w-6 h-6" />
+                            Preguntar por WhatsApp
+                        </a>
+                        <p class="text-center text-xs text-gray-400 mt-3">
+                            Te contestaremos lo antes posible para confirmar tu reserva.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {/* MODAL GUÍA DE TALLAS */}
+        <dialog id="sizeGuideModal" class="p-0 rounded-lg shadow-2xl backdrop:bg-black/50 w-full max-w-2xl m-auto">
+            <div class="bg-white">
+                <div class="flex justify-between items-center p-6 border-b border-gray-100 bg-eva-cream/30">
+                    <h3 class="text-2xl font-serif text-eva-dark">Guía de Tallas</h3>
+                    <button onclick="document.getElementById('sizeGuideModal').close()" class="text-gray-400 hover:text-red-500 transition p-2 rounded-full hover:bg-gray-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="p-6 md:p-8 max-h-[70vh] overflow-y-auto">
+                    
+                    {/* SECCIÓN ADULTOS */}
+                    <div class="grid md:grid-cols-2 gap-8 mb-10">
+                        <div>
+                            <h4 class="text-lg font-bold text-eva-green mb-4 flex items-center gap-2 border-b border-eva-gold/20 pb-2">
+                                <div class="text-eva-gold"><Icon name="dress" class="w-6 h-6" /></div>
+                                Ropa Mujer
+                            </h4>
+                            <table class="w-full text-xs text-left text-gray-600 border border-gray-200">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                    <tr><th class="px-2 py-2">Int.</th><th class="px-2 py-2">UE</th><th class="px-2 py-2">Pecho</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b"><td class="px-2 py-2 font-bold">S</td><td class="px-2 py-2">36-38</td><td class="px-2 py-2">85-89</td></tr>
+                                    <tr class="border-b"><td class="px-2 py-2 font-bold">M</td><td class="px-2 py-2">38-40</td><td class="px-2 py-2">90-94</td></tr>
+                                    <tr class="border-b"><td class="px-2 py-2 font-bold">L</td><td class="px-2 py-2">42</td><td class="px-2 py-2">95-99</td></tr>
+                                    <tr class="border-b"><td class="px-2 py-2 font-bold">XL</td><td class="px-2 py-2">44-46</td><td class="px-2 py-2">100-104</td></tr>
+                                    <tr><td class="px-2 py-2 font-bold">XXL</td><td class="px-2 py-2">48</td><td class="px-2 py-2">105-110</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <h4 class="text-lg font-bold text-eva-green mb-4 flex items-center gap-2 border-b border-eva-gold/20 pb-2">
+                                <div class="text-eva-gold"><Icon name="shoe" class="w-6 h-6" /></div>
+                                Calzado Adultos
+                            </h4>
+                            <div class="grid grid-cols-2 gap-4">
+                                <table class="w-full text-xs text-left text-gray-600 border border-gray-200">
+                                    <thead class="bg-gray-50"><tr><th class="px-2 py-2">UE</th><th class="px-2 py-2">CM</th></tr></thead>
+                                    <tbody>
+                                        <tr class="border-b"><td class="px-2 py-1 font-bold">36</td><td class="px-2 py-1">23.0</td></tr>
+                                        <tr class="border-b"><td class="px-2 py-1 font-bold">38</td><td class="px-2 py-1">24.3</td></tr>
+                                        <tr class="border-b"><td class="px-2 py-1 font-bold">40</td><td class="px-2 py-1">25.6</td></tr>
+                                        <tr><td class="px-2 py-1 font-bold">42</td><td class="px-2 py-1">27.0</td></tr>
+                                    </tbody>
+                                </table>
+                                <table class="w-full text-xs text-left text-gray-600 border border-gray-200">
+                                    <thead class="bg-gray-50"><tr><th class="px-2 py-2">UE</th><th class="px-2 py-2">CM</th></tr></thead>
+                                    <tbody>
+                                        <tr class="border-b"><td class="px-2 py-1 font-bold">43</td><td class="px-2 py-1">27.6</td></tr>
+                                        <tr class="border-b"><td class="px-2 py-1 font-bold">44</td><td class="px-2 py-1">28.3</td></tr>
+                                        <tr class="border-b"><td class="px-2 py-1 font-bold">45</td><td class="px-2 py-1">29.0</td></tr>
+                                        <tr class="border-b"><td class="px-2 py-1 font-bold">46</td><td class="px-2 py-1">29.6</td></tr>
+                                        <tr><td class="px-2 py-1 font-bold">47</td><td class="px-2 py-1">30.3</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* SECCIÓN INFANTIL Y BEBÉ CON ICONO OSO */}
+                    <div class="bg-eva-cream/30 p-6 rounded-lg border border-eva-gold/10">
+                        <h4 class="text-lg font-bold text-eva-green mb-4 flex items-center gap-2">
+                            <div class="text-eva-gold"><Icon name="bear" class="w-6 h-6" /></div>
+                            Bebés y Niños
+                        </h4>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h5 class="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Bebés (0-24 Meses)</h5>
+                                <table class="w-full text-xs text-left text-gray-600 border border-gray-200 bg-white">
+                                    <tbody>
+                                        <tr class="border-b"><td class="px-2 py-1">16 (0-3m)</td><td class="px-2 py-1">9.7 cm</td></tr>
+                                        <tr class="border-b"><td class="px-2 py-1">18 (6-9m)</td><td class="px-2 py-1">11.0 cm</td></tr>
+                                        <tr class="border-b"><td class="px-2 py-1">20 (12m)</td><td class="px-2 py-1">12.3 cm</td></tr>
+                                        <tr><td class="px-2 py-1">22 (18-24m)</td><td class="px-2 py-1">13.7 cm</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div>
+                                <h5 class="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Niños (2-10 Años)</h5>
+                                <table class="w-full text-xs text-left text-gray-600 border border-gray-200 bg-white">
+                                    <tbody>
+                                        <tr class="border-b"><td class="px-2 py-1">24 (2 años)</td><td class="px-2 py-1">15.0 cm</td></tr>
+                                        <tr class="border-b"><td class="px-2 py-1">28 (4 años)</td><td class="px-2 py-1">17.7 cm</td></tr>
+                                        <tr class="border-b"><td class="px-2 py-1">32 (7 años)</td><td class="px-2 py-1">20.3 cm</td></tr>
+                                        <tr><td class="px-2 py-1">35 (10 años)</td><td class="px-2 py-1">22.3 cm</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 flex items-start gap-3 bg-blue-50 p-4 rounded text-blue-800 text-xs">
+                        <p class="italic">
+                            * Estas medidas son orientativas. Cada marca puede variar ligeramente. Si tienes dudas entre dos tallas, te recomendamos <strong>contactar con nosotras por WhatsApp</strong> para un asesoramiento personalizado.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="p-6 border-t border-gray-100 bg-gray-50 flex justify-end">
+                    <button onclick="document.getElementById('sizeGuideModal').close()" class="px-8 py-3 bg-eva-dark text-white rounded-sm text-sm uppercase tracking-wide hover:bg-eva-gold hover:text-eva-dark transition font-bold shadow-sm">Entendido</button>
+                </div>
+            </div>
+        </dialog>
+    </main>
+    <Footer />
+</Layout>

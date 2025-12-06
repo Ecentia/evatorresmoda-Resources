@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@theme {
+  /* Paleta Elegante Eva Torres */
+  --color-eva-green: #105038;   /* Verde corporativo */
+  --color-eva-dark: #0a2e20;    /* Verde muy oscuro para textos */
+  --color-eva-gold: #d4af37;    /* Dorado */
+  --color-eva-cream: #f9f8f6;   /* Crema muy suave para fondos */
+  --color-eva-white: #ffffff;
+
+  /* Tipografías */
+  --font-script: 'Great Vibes', cursive;       /* SOLO para "Eva Torres" */
+  --font-heading: 'Playfair Display', serif;   /* Para títulos de sección (Elegante y legible) */
+  --font-body: 'Lato', sans-serif;             /* Para textos largos */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-eva-white);
+  font-family: var(--font-body);
+  color: #333;
+}
+
+/* Clase para el Logo */
+.font-brand {
+  font-family: var(--font-script);
+}
+
+/* Clase para Títulos de Sección (Corrección de la fuente "fea") */
+h1, h2, h3 {
+  font-family: var(--font-heading);
+}

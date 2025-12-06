@@ -1,0 +1,104 @@
+---
+import '../styles/global.css';
+import Icon from '../components/Icons.astro';
+import CookieBanner from '../components/CookieBanner.astro';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		
+		<title>{title} | Moda, Calzados y Complementos en Arahal</title>
+
+		<meta name="description" content="Eva Torres en Arahal. Tienda de moda, calzados y complementos. Descubre las últimas tendencias con trato cercano en Bda. Francisco de Quevedo." />
+		
+		<meta name="keywords" content="Eva Torres, Arahal, ropa mujer, calzados, perfumes, bolsos, moda sevilla, tienda de ropa, complementos" />
+
+		<link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content="Moda, calzado y belleza en Arahal. Ven a Eva Torres y encuentra tu estilo." />
+		<meta property="og:image" content="/images/portada-social.jpg" /> <meta property="og:url" content={Astro.url} />
+		<meta property="og:site_name" content="Eva Torres Moda" />
+		<meta property="og:locale" content="es_ES" />
+
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+		<script type="application/ld+json">
+		{
+		"@context": "https://schema.org",
+		"@type": "ClothingStore",
+		"name": "Eva Torres Calzados y Complementos",
+		"image": [
+			"https://www.evatorresmoda.com/logo.png" 
+		],
+		"@id": "https://www.evatorresmoda.com",
+		"url": "https://www.evatorresmoda.com",
+		"telephone": "+34651688937",
+		"address": {
+			"@type": "PostalAddress",
+			"streetAddress": "Bda. Francisco de Quevedo, Bloque 22, Local C",
+			"zsAddressLocality": "Arahal",
+			"addressRegion": "Sevilla",
+			"postalCode": "41600",
+			"addressCountry": "ES"
+		},
+		"geo": {
+			"@type": "GeoCoordinates",
+			"latitude": 37.2628, 
+			"longitude": -5.5467 
+		},
+		"openingHoursSpecification": [
+			{
+			"@type": "OpeningHoursSpecification",
+			"dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+			"opens": "10:00",
+			"closes": "13:45"
+			},
+			{
+			"@type": "OpeningHoursSpecification",
+			"dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+			"opens": "18:00",
+			"closes": "21:00"
+			},
+			{
+			"@type": "OpeningHoursSpecification",
+			"dayOfWeek": "Saturday",
+			"opens": "10:00",
+			"closes": "13:45"
+			}
+		],
+		"sameAs": [
+			"https://www.facebook.com/evamaria.rodrigueztorres.9"
+		],
+		"priceRange": "$$"
+		}
+		</script>
+	</head>
+	<body class="flex flex-col min-h-screen">
+		<slot />
+        
+        <a 
+            href="https://wa.me/34651688937" 
+            target="_blank" 
+            class="fixed bottom-6 right-6 z-50 bg-[#25D366] hover:bg-[#20b858] text-white rounded-full shadow-2xl hover:scale-105 transition-transform duration-300 w-16 h-16 border-2 border-white flex items-center justify-center"
+            aria-label="Contactar por WhatsApp"
+        >
+            <Icon name="whatsapp" class="w-9 h-9 fill-current" />
+        </a>
+		<CookieBanner />
+	</body>
+</html>
