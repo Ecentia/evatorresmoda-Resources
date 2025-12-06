@@ -38,13 +38,14 @@ export default defineType({
       to: [{ type: 'category' }],
       group: 'details',
     }),
-    // NUEVO CAMPO: CARACTERÍSTICAS CON ICONOS
+    // CAMPO CARACTERÍSTICAS: se eliminó 'layout: grid'
     defineField({
         name: 'features',
         title: 'Características Clave (Iconos)',
         type: 'array',
         of: [{ type: 'string' }],
         options: {
+          // El diseño 'grid' fue eliminado, ahora usa el layout por defecto
           list: [
             { title: 'Envío Gratis', value: 'shipping' },
             { title: 'Hecho en España', value: 'spain' },
@@ -52,7 +53,6 @@ export default defineType({
             { title: 'Comodidad Extra', value: 'comfort' },
             { title: 'Diseño Exclusivo', value: 'exclusive' },
           ],
-          layout: 'grid',
         },
         group: 'details',
       }),
@@ -61,7 +61,10 @@ export default defineType({
       title: 'Tallas',
       type: 'array',
       of: [{ type: 'string' }],
-      options: { layout: 'tags' },
+      options: { 
+        // El layout 'tags' fue eliminado, ahora usa el layout por defecto
+        // layout: 'tags' 
+      },
       group: 'details',
     }),
     defineField({
@@ -76,7 +79,7 @@ export default defineType({
       title: 'Galería',
       type: 'array',
       of: [{ type: 'image' }],
-      options: { layout: 'grid' },
+      options: { layout: 'grid' }, // Se mantiene grid aquí, ya que suele funcionar para galerías.
       group: 'media',
     }),
     defineField({
